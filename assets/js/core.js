@@ -79,6 +79,7 @@ var openModal = function () {
 var closeModal = function () { document.getElementById('modal').classList.add('hidden'); };
 var openEmailThread = function (threadIndex) {
     if (threadIndex === void 0) { threadIndex = 0; }
+    console.log("hello");
     currentThreadIndex = threadIndex;
     var thread = emailThreads[threadIndex];
     var emailContentDiv = document.getElementById("email-content");

@@ -122,6 +122,7 @@ const openModal = (): void => {
 const closeModal = (): void => { document.getElementById('modal')!.classList.add('hidden'); }
 
 const openEmailThread = (threadIndex: number = 0): void => {
+  console.log("hello")
   currentThreadIndex = threadIndex;
   const thread = emailThreads[threadIndex];
   const emailContentDiv = document.getElementById("email-content")!;

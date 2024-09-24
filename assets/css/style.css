@@ -11,6 +11,10 @@
     color: #6B7280; /* gray-500 */
 }
 
+.text-third {
+    color: #80899c; /* gray-300 */
+}
+
 .hover-bg-primary:hover {
     background-color: #4338CA; /* blue-700 */
 }

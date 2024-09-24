@@ -6,39 +6,74 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Email Inbox</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="assets/css/style.css">
   <link rel="icon" type="image/x-icon" href="assets/images/open-email.png">
+  <!--     Fonts and icons     -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
+  <!-- Font Awesome Icons -->
+  <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+  <!-- Nucleo Icons -->
+  <link href="./assets/css/nucleo-icons.css" rel="stylesheet" />
+  <link href="./assets/css/nucleo-svg.css" rel="stylesheet" />
+  <!-- Popper -->
+  <script src="https://unpkg.com/@popperjs/core@2"></script>
+  <!-- Main Styling -->
+  <link href="./assets/css/argon-dashboard-tailwind.css" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/style.css">
+
 </head>
 
-<body class="bg-secondary h-screen">
+<body
+  class="m-0 font-sans text-base antialiased font-normal leading-default bg-gray-50 text-slate-500">
 
   <!-- Main container -->
-  <div class="h-full flex">
-
+  <div class="h-full flex ">
     <!-- Sidebar - Email List -->
-    <div class="w-1/4 bg-white border-r h-full overflow-y-auto">
-      <div class="p-4 font-bold text-xl border-b bg-primary text-white">Inbox</div>
-
-      <!-- Email item 1 -->
-      <div class="p-4 border-b flex items-center cursor-pointer hover-bg-primary hover:text-white"
-        onclick="openEmailThread(0)">
-        <img class="h-10 w-10 rounded-full mr-4" src="assets/images/woman1.jpeg" alt="Sender Image">
-        <div class="flex-1">
-          <div class="font-semibold">Email Thread 1</div>
-          <div class="text-secondary text-sm truncate">This is a conversation between John and Jane...</div>
-        </div>
+    <!-- sidenav  -->
+    <aside
+      class="fixed inset-y-0 flex-wrap items-center justify-between block w-full p-0 my-4 overflow-y-auto antialiased transition-transform duration-200 -translate-x-full bg-white border-0 shadow-xl max-w-md ease-nav-brand z-990 xl:ml-1 rounded-2xl xl:left-0 xl:translate-x-0"
+      aria-expanded="false">
+      <!-- Inbox Title -->
+      <div class="h-19 bg-primary">
+        <a class="block px-8 py-6 m-0 text-2xl whitespace-nowrap text-white"
+          href="/">
+          <span class="ml-2 font-semibold transition-all duration-200 ease-nav-brand">Inbox</span>
+        </a>
       </div>
+     
+      <hr class="h-px mt-0 bg-transparent bg-gradient-to-r from-transparent via-black/40 to-transparent />
 
-      <!-- Email item 2 -->
-      <div class="p-4 border-b flex items-center cursor-pointer hover-bg-primary hover:text-white"
-        onclick="openEmailThread(1)">
-        <img class="h-10 w-10 rounded-full mr-4" src="assets/images/man1.jpeg" alt="Sender Image">
-        <div class="flex-1">
-          <div class="font-semibold">Email Thread 2</div>
-          <div class="text-secondary text-sm truncate">This is a conversation between Alice and Bob...</div>
-        </div>
+      <div class="items-center block w-auto max-h-screen overflow-auto h-sidenav grow basis-full">
+
+        <ul class="flex flex-col pl-0 mb-0">
+
+          <li class="mt-0.5 w-full ">
+            <div class="py-2.7 bg-blue-500/13 text-sm ease-nav-brand my-0 mx-2 flex items-center hover:bg-blue-800 hover:text-white whitespace-nowrap rounded-lg px-4 font-semibold text-slate-700 transition-colors"
+            onclick="openEmailThread(0)"
+             >
+            <img class="h-10 w-10 rounded-full mr-4" src="assets/images/woman1.jpeg" alt="Sender Image">
+            <div class="flex-1">
+              <div class="font-semibold">Email Thread 2</div>
+              <div class="text-gray-400 text-sm truncate">This is a conversation between Alice and Bob...</div>
+            </div>
+          </div>
+          </li>
+
+          <li class="mt-0.5 w-full">
+            <div class="py-2.7 bg-blue-500/13 text-sm ease-nav-brand my-0 mx-2 flex items-center hover:bg-blue-800 hover:text-white whitespace-nowrap rounded-lg px-4 font-semibold text-slate-700 transition-colors"
+            onclick="openEmailThread(0)"
+              >
+            <img class="h-10 w-10 rounded-full mr-4" src="assets/images/woman1.jpeg" alt="Sender Image">
+            <div class="flex-1">
+              <div class="font-semibold">Email Thread 2</div>
+              <div class="text-gray-400 text-sm truncate">This is a conversation between Alice and Bob...</div>
+            </div>
+          </div>
+          </li>
+
+        </ul>
       </div>
-    </div>
+    </aside>
+    <!-- end sidenav -->
 
     <!-- Main content - Email Threads -->
     <div class="w-3/4 h-full overflow-y-auto relative" id="main-thread">
@@ -58,15 +93,17 @@
   <!-- Modal HTML -->
   <div id="modal" class="fixed inset-0 bg-gray-800 bg-opacity-75 flex justify-center items-center hidden">
     <div class="bg-primary p-6 rounded-lg shadow-lg text-center">
-        <h2 class="text-2xl font-semibold mb-4 text-white">Summary</h2>
-        <p id="modal-content" class="text-white">Loading...</p>
-        <button class="mt-4 bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600" onclick="closeModal()">
-            Close
-        </button>
+      <h2 class="text-2xl font-semibold mb-4 text-white">Summary</h2>
+      <p id="modal-content" class="text-white">Loading...</p>
+      <button class="mt-4 bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600" onclick="closeModal()">
+        Close
+      </button>
     </div>
-</div>
+  </div>
 
   <script src="assets/js/core.js"></script>
+  <script src="./assets/js/plugins/perfect-scrollbar.min.js" async></script>
+  <script src="./assets/js/argon-dashboard-tailwind.js?v=1.0.1" async></script>
 </body>
 
 </html>
