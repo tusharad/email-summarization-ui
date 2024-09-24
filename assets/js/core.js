@@ -9,7 +9,7 @@ var emailThreads = [];
 var openModal = function () {
     document.getElementById('modal').classList.remove('hidden');
     var thread = emailThreads[currentThreadIndex];
-    fetch('http://localhost:8000/summarize', {
+    fetch('http://localhost:5000/summarize', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'

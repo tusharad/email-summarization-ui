@@ -51,7 +51,7 @@ const openModal = (): void => {
 
   const thread = emailThreads[currentThreadIndex];
 
-  fetch('http://localhost:8000/summarize', {
+  fetch('http://localhost:5000/summarize', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
