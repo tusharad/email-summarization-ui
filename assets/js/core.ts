@@ -44,58 +44,7 @@ const threadEmailSectionHTML = (
             </div>`
 }
 
-const emailThreads: Thread[] = [
-  {
-    threadTitle: "Email Thread 1",
-    emails: [
-      {
-        sender: "John Doe",
-        senderEmail: "john.doe@example.com",
-        fromEmail: "tushar.ad@example.com",
-        date: "Sept 23, 2024 10:30 AM",
-        content: "This is John's first email in the thread. It contains some important details about the project.",
-        isOpen: false
-      },
-      {
-        sender: "Jane Smith",
-        senderEmail: "jane.smith@example.com",
-        fromEmail: "tushar.ad@example.com",
-        date: "Sept 23, 2024 10:45 AM",
-        content: "This is Jane's response to John. She provides further insights and asks for clarification.",
-        isOpen: false
-      },
-      {
-        sender: "John Doe",
-        senderEmail: "john.doe@example.com",
-        fromEmail: "tushar.ad@example.com",
-        date: "Sept 23, 2024 11:00 AM",
-        content: "John replies back to Jane with answers to her questions.",
-        isOpen: false
-      }
-    ]
-  },
-  {
-    threadTitle: "Email Thread 2",
-    emails: [
-      {
-        sender: "Alice Johnson",
-        senderEmail: "alice.johnson@example.com",
-        fromEmail: "tushar.ad@example.com",
-        date: "Sept 24, 2024 9:00 AM",
-        content: "Alice kicks off the second thread with details on the new product launch.",
-        isOpen: false
-      },
-      {
-        sender: "Bob Martin",
-        senderEmail: "bob.martin@example.com",
-        fromEmail: "tushar.ad@example.com",
-        date: "Sept 24, 2024 9:30 AM",
-        content: "Bob responds to Alice with feedback and suggestions for improvement.",
-        isOpen: false
-      }
-    ]
-  }
-];
+let emailThreads: Thread[] = [];
 
 const openModal = (): void => {
   document.getElementById('modal')!.classList.remove('hidden');
@@ -143,6 +92,48 @@ const toggleEmail = (threadIndex: number, emailIndex: number): void => {
   openEmailThread(threadIndex);
 }
 
+const generateSidebarHTML = (): void => {
+  const sidebar = document.getElementById('email-sidebar')!;
+  sidebar.innerHTML = '';  // Clear the existing content
+
+  emailThreads.forEach((thread, index) => {
+    const truncatedContent = thread.emails.length > 0 ? thread.emails[0].content.substring(0, 50) + '...' : 'No content available';
+    const sidebarItemHTML = `
+      <li class="mt-0.5 w-full">
+        <div
+          class="py-2.7 bg-blue-500/13 text-sm ease-nav-brand my-0 mx-0 flex items-center hover:bg-blue-800 hover:text-white whitespace-nowrap rounded-lg px-4 font-semibold text-slate-700 transition-colors"
+          onclick="openEmailThread(${index})">
+          <img class="h-10 w-10 rounded-full mr-4" src="assets/images/woman1.jpeg" alt="Sender Image">
+          <div class="flex-1">
+            <div class="font-semibold">${thread.threadTitle}</div>
+            <div class="text-gray-400 text-sm truncate">${truncatedContent}</div>
+          </div>
+        </div>
+      </li>
+    `;
+    sidebar.innerHTML += sidebarItemHTML;
+  });
+};
+
+const fetchEmailThreads = (): void => {
+  fetch('http://localhost:5000/all_email_threads')
+    .then(response => response.json())
+    .then(data => {
+      emailThreads = data; // Set the fetched email threads
+      openEmailThread();   // Open the first email thread by default
+      generateSidebarHTML();
+      document.getElementById('loading-spinner')!.classList.add('hidden');
+      document.getElementById('email-content')!.classList.remove('hidden');
+    })
+    .catch(error => {
+      console.error('Error fetching email threads:', error);
+      // Hide the spinner and show an error message
+      document.getElementById('loading-spinner')!.classList.add('hidden');
+      document.getElementById('email-content')!.innerHTML = 'Failed to load email threads. Please try again later.';
+      document.getElementById('email-content')!.classList.remove('hidden');
+    });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
-  openEmailThread();
+  fetchEmailThreads();
 });

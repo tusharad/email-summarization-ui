@@ -5,58 +5,7 @@ var threadTitleSectionHTML = function (threadTitle) {
 var threadEmailSectionHTML = function (threadIndex, index, senderName, senderEmail, emailDate, emailContent, isOpen) {
     return "<div class=\"p-6 border-b bg-white cursor-pointer hover:bg-blue-100\" id=\"email-cont\" onclick=\"toggleEmail(".concat(threadIndex, ", ").concat(index, ")\">\n                <div class=\"flex justify-between items-center mb-4\">\n                    <div class=\"flex items-center\">\n                        <img class=\"h-8 w-8 rounded-full mr-2\" src=\"assets/images/man2.jpeg\" alt=\"Sender Image\">\n                        <div>\n                            <p class=\"font-semibold text-primary\">").concat(senderName, "</p>\n                            <p class=\"text-sm text-secondary\">").concat(senderEmail, "</p>\n                        </div>\n                    </div>\n                    <p class=\"text-sm text-gray-400\">").concat(emailDate, "</p>\n                </div>\n                ").concat(isOpen ? "<div class=\"text-gray-900 mt-4\">".concat(emailContent, "</div>") : "<div class=\"text-gray-500 truncate\">".concat(emailContent.substring(0, 100), "...</div>"), "\n            </div>");
 };
-var emailThreads = [
-    {
-        threadTitle: "Email Thread 1",
-        emails: [
-            {
-                sender: "John Doe",
-                senderEmail: "john.doe@example.com",
-                fromEmail: "tushar.ad@example.com",
-                date: "Sept 23, 2024 10:30 AM",
-                content: "This is John's first email in the thread. It contains some important details about the project.",
-                isOpen: false
-            },
-            {
-                sender: "Jane Smith",
-                senderEmail: "jane.smith@example.com",
-                fromEmail: "tushar.ad@example.com",
-                date: "Sept 23, 2024 10:45 AM",
-                content: "This is Jane's response to John. She provides further insights and asks for clarification.",
-                isOpen: false
-            },
-            {
-                sender: "John Doe",
-                senderEmail: "john.doe@example.com",
-                fromEmail: "tushar.ad@example.com",
-                date: "Sept 23, 2024 11:00 AM",
-                content: "John replies back to Jane with answers to her questions.",
-                isOpen: false
-            }
-        ]
-    },
-    {
-        threadTitle: "Email Thread 2",
-        emails: [
-            {
-                sender: "Alice Johnson",
-                senderEmail: "alice.johnson@example.com",
-                fromEmail: "tushar.ad@example.com",
-                date: "Sept 24, 2024 9:00 AM",
-                content: "Alice kicks off the second thread with details on the new product launch.",
-                isOpen: false
-            },
-            {
-                sender: "Bob Martin",
-                senderEmail: "bob.martin@example.com",
-                fromEmail: "tushar.ad@example.com",
-                date: "Sept 24, 2024 9:30 AM",
-                content: "Bob responds to Alice with feedback and suggestions for improvement.",
-                isOpen: false
-            }
-        ]
-    }
-];
+var emailThreads = [];
 var openModal = function () {
     document.getElementById('modal').classList.remove('hidden');
     var thread = emailThreads[currentThreadIndex];
@@ -95,6 +44,33 @@ var toggleEmail = function (threadIndex, emailIndex) {
     email.isOpen = !email.isOpen;
     openEmailThread(threadIndex);
 };
+var generateSidebarHTML = function () {
+    var sidebar = document.getElementById('email-sidebar');
+    sidebar.innerHTML = ''; // Clear the existing content
+    emailThreads.forEach(function (thread, index) {
+        var truncatedContent = thread.emails.length > 0 ? thread.emails[0].content.substring(0, 50) + '...' : 'No content available';
+        var sidebarItemHTML = "\n      <li class=\"mt-0.5 w-full\">\n        <div\n          class=\"py-2.7 bg-blue-500/13 text-sm ease-nav-brand my-0 mx-0 flex items-center hover:bg-blue-800 hover:text-white whitespace-nowrap rounded-lg px-4 font-semibold text-slate-700 transition-colors\"\n          onclick=\"openEmailThread(".concat(index, ")\">\n          <img class=\"h-10 w-10 rounded-full mr-4\" src=\"assets/images/woman1.jpeg\" alt=\"Sender Image\">\n          <div class=\"flex-1\">\n            <div class=\"font-semibold\">").concat(thread.threadTitle, "</div>\n            <div class=\"text-gray-400 text-sm truncate\">").concat(truncatedContent, "</div>\n          </div>\n        </div>\n      </li>\n    ");
+        sidebar.innerHTML += sidebarItemHTML;
+    });
+};
+var fetchEmailThreads = function () {
+    fetch('http://localhost:5000/all_email_threads')
+        .then(function (response) { return response.json(); })
+        .then(function (data) {
+        emailThreads = data; // Set the fetched email threads
+        openEmailThread(); // Open the first email thread by default
+        generateSidebarHTML();
+        document.getElementById('loading-spinner').classList.add('hidden');
+        document.getElementById('email-content').classList.remove('hidden');
+    })
+        .catch(function (error) {
+        console.error('Error fetching email threads:', error);
+        // Hide the spinner and show an error message
+        document.getElementById('loading-spinner').classList.add('hidden');
+        document.getElementById('email-content').innerHTML = 'Failed to load email threads. Please try again later.';
+        document.getElementById('email-content').classList.remove('hidden');
+    });
+};
 document.addEventListener('DOMContentLoaded', function () {
-    openEmailThread();
+    fetchEmailThreads();
 });
