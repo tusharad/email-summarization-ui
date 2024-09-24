@@ -22,73 +22,84 @@
 
 </head>
 
-<body
-  class="m-0 font-sans text-base antialiased font-normal leading-default bg-gray-50 text-slate-500">
+<body class="m-0 font-sans text-base antialiased font-normal leading-default bg-gray-50 text-slate-500">
 
   <!-- Main container -->
-  <div class="h-full flex ">
-    <!-- Sidebar - Email List -->
-    <!-- sidenav  -->
-    <aside
-      class="fixed inset-y-0 flex-wrap items-center justify-between block w-full p-0 my-4 overflow-y-auto antialiased transition-transform duration-200 -translate-x-full bg-white border-0 shadow-xl max-w-md ease-nav-brand z-990 xl:ml-1 rounded-2xl xl:left-0 xl:translate-x-0"
-      aria-expanded="false">
-      <!-- Inbox Title -->
-      <div class="h-19 bg-primary">
-        <a class="block px-8 py-6 m-0 text-2xl whitespace-nowrap text-white"
-          href="/">
-          <span class="ml-2 font-semibold transition-all duration-200 ease-nav-brand">Inbox</span>
-        </a>
-      </div>
-     
-      <hr class="h-px mt-0 bg-transparent bg-gradient-to-r from-transparent via-black/40 to-transparent />
+  <!-- sidenav  -->
+  <aside
+    class="fixed inset-y-0 flex-wrap items-center justify-between block w-full p-0 my-4 overflow-y-auto antialiased transition-transform duration-200 -translate-x-full bg-white border-0 shadow-xl max-w-sm ease-nav-brand z-990 xl:ml-1 rounded-xl xl:left-0 xl:translate-x-0"
+    aria-expanded="false">
+    <!-- Inbox Title -->
+    <div class="h-19 bg-primary">
+      <a class="block px-8 py-6 m-0 text-2xl whitespace-nowrap text-white" href="/">
+        <span class="ml-2 font-semibold transition-all duration-200 ease-nav-brand">Inbox</span>
+      </a>
+    </div>
 
-      <div class="items-center block w-auto max-h-screen overflow-auto h-sidenav grow basis-full">
+    <hr class="h-px mt-0 bg-transparent bg-gradient-to-r from-transparent via-black/40 to-transparent />
 
-        <ul class="flex flex-col pl-0 mb-0">
+      <div class=" items-center block w-auto max-h-screen overflow-auto h-sidenav grow basis-full">
 
-          <li class="mt-0.5 w-full ">
-            <div class="py-2.7 bg-blue-500/13 text-sm ease-nav-brand my-0 mx-2 flex items-center hover:bg-blue-800 hover:text-white whitespace-nowrap rounded-lg px-4 font-semibold text-slate-700 transition-colors"
-            onclick="openEmailThread(0)"
-             >
-            <img class="h-10 w-10 rounded-full mr-4" src="assets/images/woman1.jpeg" alt="Sender Image">
-            <div class="flex-1">
-              <div class="font-semibold">Email Thread 2</div>
-              <div class="text-gray-400 text-sm truncate">This is a conversation between Alice and Bob...</div>
+    <ul class="flex flex-col pl-0 mb-0">
+
+      <li class="mt-0.5 w-full ">
+        <div
+          class="py-2.7 bg-blue-500/13 text-md ease-nav-brand my-0 mx-0 flex items-center hover:bg-blue-800 hover:text-white whitespace-nowrap rounded-lg px-4 font-semibold text-slate-700 transition-colors"
+          onclick="openEmailThread(0)">
+          <img class="h-10 w-10 rounded-full mr-4" src="assets/images/woman1.jpeg" alt="Sender Image">
+          <div class="flex-1">
+            <div class="font-semibold">Email Thread 1</div>
+            <div class="text-gray-400 text-sm truncate">This is a conversation between Alice and Bob...</div>
+          </div>
+        </div>
+      </li>
+
+      <li class="mt-0.5 w-full">
+        <div
+          class="py-2.7 bg-blue-500/13 text-sm ease-nav-brand my-0 mx-0 flex items-center hover:bg-blue-800 hover:text-white whitespace-nowrap rounded-lg px-4 font-semibold text-slate-700 transition-colors"
+          onclick="openEmailThread(1)">
+          <img class="h-10 w-10 rounded-full mr-4" src="assets/images/woman1.jpeg" alt="Sender Image">
+          <div class="flex-1">
+            <div class="font-semibold">Email Thread 2</div>
+            <div class="text-gray-400 text-sm truncate">This is a conversation between Alice and Bob...</div>
+          </div>
+        </div>
+      </li>
+
+    </ul>
+  </aside>
+  <!-- end sidenav -->
+
+  <main class="relative h-full max-h-screen transition-all duration-200 ease-in-out xl:ml-96 rounded-xl">
+
+    <div class="w-full px-6 py-6 mx-auto">
+      <!-- row 1 -->
+      <div class="flex flex-wrap -mx-3">
+        <!-- card1 -->
+        <div class="w-full max-w-full px-3 mb-6">
+          <div class="relative flex flex-col min-w-0 break-words bg-white shadow-xlrounded-2xl bg-clip-border">
+            <!-- <div class="flex-auto p-4"> -->
+              <!-- <div class="flex flex-row -mx-3"> -->
+                <!-- <div class="flex-none max-w-full px-3"> -->
+                  <div class="h-full overflow-y-auto" id="main-thread">
+                    <!-- Button to trigger modal -->
+                    <div class="absolute top-4 right-4">
+                      <button class="bg-primary text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700" onclick="openModal()">
+                        Summarize
+                      </button>
+                    </div>
+                    <div id="email-content" class="p-6 bg-white">
+                      <!-- Default email thread will be loaded here by JavaScript -->
+                    </div>
+                  <!-- </div> -->
+                <!-- </div> -->
+              <!-- </div> -->
             </div>
           </div>
-          </li>
-
-          <li class="mt-0.5 w-full">
-            <div class="py-2.7 bg-blue-500/13 text-sm ease-nav-brand my-0 mx-2 flex items-center hover:bg-blue-800 hover:text-white whitespace-nowrap rounded-lg px-4 font-semibold text-slate-700 transition-colors"
-            onclick="openEmailThread(0)"
-              >
-            <img class="h-10 w-10 rounded-full mr-4" src="assets/images/woman1.jpeg" alt="Sender Image">
-            <div class="flex-1">
-              <div class="font-semibold">Email Thread 2</div>
-              <div class="text-gray-400 text-sm truncate">This is a conversation between Alice and Bob...</div>
-            </div>
-          </div>
-          </li>
-
-        </ul>
-      </div>
-    </aside>
-    <!-- end sidenav -->
-
-    <!-- Main content - Email Threads -->
-    <div class="w-3/4 h-full overflow-y-auto relative" id="main-thread">
-      <!-- Button to trigger modal -->
-      <div class="absolute top-4 right-4">
-        <button class="bg-primary text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700" onclick="openModal()">
-          Summarize
-        </button>
-      </div>
-
-      <div id="email-content" class="p-6 bg-white">
-        <!-- Default email thread will be loaded here by JavaScript -->
+        </div>
       </div>
     </div>
-  </div>
+  </main>
 
   <!-- Modal HTML -->
   <div id="modal" class="fixed inset-0 bg-gray-800 bg-opacity-75 flex justify-center items-center hidden">
