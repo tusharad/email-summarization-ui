@@ -1,0 +1,41 @@
+.bg-primary {
+    background-color: #951ab4; /* blue-600 */
+}
+.bg-secondary {
+    background-color: #EEF2FF; /* indigo-50 */
+}
+.text-primary {
+    color: #4F46E5; /* blue-600 */
+}
+.text-secondary {
+    color: #6B7280; /* gray-500 */
+}
+
+.text-third {
+    color: #80899c; /* gray-300 */
+}
+
+.hover-bg-primary:hover {
+    background-color: #4338CA; /* blue-700 */
+}
+
+#thread-title {
+    background-color: #ffffff;
+}
+
+.spinner-border {
+    display: inline-block;
+    width: 2rem;
+    height: 2rem;
+    border: 0.25rem solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: spin 0.75s linear infinite;
+  }
+  
+  @keyframes spin {
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  
