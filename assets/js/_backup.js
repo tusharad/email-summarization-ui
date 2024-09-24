@@ -116,7 +116,7 @@ function openEmailThread(threadIndex) {
             <div class="p-6 border-b bg-white cursor-pointer hover:bg-blue-100" id="email-cont" onclick="toggleEmail(${threadIndex}, ${index})">
                 <div class="flex justify-between items-center mb-4">
                     <div class="flex items-center">
-                        <img class="h-8 w-8 rounded-full mr-2" src="assets/man2.jpeg" alt="Sender Image">
+                        <img class="h-8 w-8 rounded-full mr-2" src="assets/images/man2.jpeg" alt="Sender Image">
                         <div>
                             <p class="font-semibold text-primary">${email.sender}</p>
                             <p class="text-sm text-secondary">${email.senderEmail}</p>
