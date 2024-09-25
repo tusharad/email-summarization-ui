@@ -1,4 +1,5 @@
 export interface Email {
+    seq_no: number;
     sender: string;
     senderEmail: string;
     date: string;

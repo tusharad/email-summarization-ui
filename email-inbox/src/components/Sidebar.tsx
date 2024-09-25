@@ -57,7 +57,7 @@ const Sidebar: React.FC<SidebarProps> = ({ emailThreads, onSelectThread, current
                   alt="Sender"
                 />
                 <div className="flex-1">
-                  <div className="font-semibold">{thread.threadTitle}</div>
+                  <div className="font-semibold">{thread.threadTitle}  ({thread.emails.length})</div>
                   <div className="text-gray-400 text-sm truncate">{truncatedContent}</div>
                 </div>
                 <p className='text-sm text-gray-400 ml-auto'>{timeOfEmail}</p>
