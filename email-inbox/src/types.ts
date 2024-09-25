@@ -7,6 +7,7 @@ export interface Email {
   }
   
   export interface Thread {
+    threadId: number;
     threadTitle: string;
     emails: Email[];
   }

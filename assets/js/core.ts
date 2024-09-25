@@ -15,9 +15,14 @@ interface Thread {
 let currentThreadIndex = 0;
 
 const threadTitleSectionHTML = (threadTitle: string): string => {
-  return `<div class="p-6 border-b bg-dark" id="thread-title">
-      <h1 class="text-2xl font-semibold text-primary">${threadTitle}</h1>
-      <p class="text-secondary">Click on any email to view details</p>
+  return `<div class="p-6 border-b bg-dark" >
+      <h1 class="text-2xl font-semibold text-white">${threadTitle}</h1>
+      <div class="absolute top-4 right-4">
+                <button class="bg-fuchsia-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700"
+                  onclick="openModal()">
+                  Summarize
+                </button>
+              </div>
   </div>`
 }
 
@@ -32,7 +37,7 @@ const threadEmailSectionHTML = (
   return `<div class="p-6 border-b bg-white cursor-pointer hover:bg-blue-100" id="email-cont" onclick="toggleEmail(${threadIndex}, ${index})">
                 <div class="flex justify-between items-center mb-4">
                     <div class="flex items-center">
-                        <img class="h-8 w-8 rounded-full mr-2" src="assets/images/man2.jpeg" alt="Sender Image">
+                        <img class="h-8 w-8 rounded-full mr-2" src="assets/images/${index % 2 === 0 ? 'man2.jpeg' : 'woman1.jpeg'}" alt="Sender Image">
                         <div>
                             <p class="font-semibold text-primary">${senderName}</p>
                             <p class="text-sm text-secondary">${senderEmail}</p>
@@ -40,7 +45,7 @@ const threadEmailSectionHTML = (
                     </div>
                     <p class="text-sm text-gray-400">${emailDate}</p>
                 </div>
-                ${isOpen ? `<div class="text-gray-900 mt-4">${emailContent}</div>` : `<div class="text-gray-500 truncate">${emailContent.substring(0, 100)}...</div>`}
+                ${isOpen ? `<pre class="text-gray-900 mt-4">${emailContent}</pre>` : `<div class="text-gray-500 truncate">${emailContent.substring(0, 100)}...</div>`}
             </div>`
 }
 
@@ -51,12 +56,8 @@ const openModal = (): void => {
 
   const thread = emailThreads[currentThreadIndex];
 
-  fetch('http://localhost:5000/summarize', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(thread)
+  fetch(`http://localhost:5000/summarize/${currentThreadIndex}`, {
+    method: 'POST'
   })
     .then(response => response.json())
     .then(data => {
@@ -71,7 +72,6 @@ const openModal = (): void => {
 const closeModal = (): void => { document.getElementById('modal')!.classList.add('hidden'); }
 
 const openEmailThread = (threadIndex: number = 0): void => {
-  console.log("hello")
   currentThreadIndex = threadIndex;
   const thread = emailThreads[threadIndex];
   const emailContentDiv = document.getElementById("email-content")!;
@@ -92,22 +92,40 @@ const toggleEmail = (threadIndex: number, emailIndex: number): void => {
   openEmailThread(threadIndex);
 }
 
+function truncateDateTime(dateStr: string): string {
+  const date = new Date(dateStr);
+  const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const day = days[date.getDay()];
+  let hours = date.getHours();
+  let minutes = date.getMinutes().toString();
+  if (minutes.length < 2) {
+    minutes = '0' + minutes;
+  }
+  const period = hours >= 12 ? 'PM' : 'AM';
+  hours = hours % 12 || 12; // Convert 0 hours to 12
+  const time = `${hours}:${minutes} ${period}`;
+
+  return `${day}, ${time}`;
+}
+
 const generateSidebarHTML = (): void => {
   const sidebar = document.getElementById('email-sidebar')!;
   sidebar.innerHTML = '';  // Clear the existing content
 
   emailThreads.forEach((thread, index) => {
-    const truncatedContent = thread.emails.length > 0 ? thread.emails[0].content.substring(0, 50) + '...' : 'No content available';
+    const truncatedContent = thread.emails.length > 0 ? thread.emails[0].content.substring(0, 30) + '...' : 'No content available';
+    const timeOfEmail = thread.emails.length > 0 ? truncateDateTime(thread.emails[0].date) : 'Tue, 8:00 PM';
     const sidebarItemHTML = `
       <li class="mt-0.5 w-full">
         <div
           class="py-2.7 bg-blue-500/13 text-sm ease-nav-brand my-0 mx-0 flex items-center hover:bg-blue-800 hover:text-white whitespace-nowrap rounded-lg px-4 font-semibold text-slate-700 transition-colors"
           onclick="openEmailThread(${index})">
-          <img class="h-10 w-10 rounded-full mr-4" src="assets/images/woman1.jpeg" alt="Sender Image">
+          <img class="h-10 w-10 rounded-full mr-4" src="assets/images/${index % 2 === 0 ? 'man2.jpeg' : 'woman1.jpeg'}" alt="Sender Image">
           <div class="flex-1">
             <div class="font-semibold">${thread.threadTitle}</div>
             <div class="text-gray-400 text-sm truncate">${truncatedContent}</div>
           </div>
+
         </div>
       </li>
     `;

@@ -4,7 +4,7 @@ import Email from './Email.tsx';
 
 interface MainThreadProps {
   thread: Thread;
-  onSummarize: () => void;
+  onSummarize: (thread_id: number) => void;
   onToggleEmail: (threadIndex: number, emailIndex: number) => void;
   currentThreadIndex : number
 }
@@ -20,7 +20,7 @@ const MainThread: React.FC<MainThreadProps> = ({ thread, onSummarize, onToggleEm
               <div className="absolute top-4 right-4">
                 <button
                   className="bg-primary text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700"
-                  onClick={onSummarize}
+                  onClick={() => onSummarize(thread.threadId)}
                 >
                   Summarize
                 </button>
@@ -28,7 +28,6 @@ const MainThread: React.FC<MainThreadProps> = ({ thread, onSummarize, onToggleEm
               <div id="email-content" className="p-6 bg-white">
                 <div className="p-6 border-b bg-dark" id="thread-title">
                   <h1 className="text-2xl font-semibold text-primary">{thread.threadTitle}</h1>
-                  <p className="text-secondary">Click on any email to view details</p>
                 </div>
                 {thread.emails.map((email, index) => (
                   <Email

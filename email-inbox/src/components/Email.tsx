@@ -28,7 +28,7 @@ const Email: React.FC<EmailProps> = ({indexKey, email, onToggle }) => {
         <p className="text-sm text-gray-400">{email.date}</p>
       </div>
       {email.isOpen ? (
-        <div className="text-gray-900 mt-4">{email.content}</div>
+        <pre className="text-gray-900 mt-4">{email.content}</pre>
       ) : (
         <div className="text-gray-500 truncate">{email.content.substring(0, 100)}...</div>
       )}

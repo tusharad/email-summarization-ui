@@ -30,16 +30,14 @@ const App: React.FC = () => {
     }
   };
 
-  const openModal = async () => {
+  const openModal = async (threadId: number) => {
     setIsModalOpen(true);
-    const thread = emailThreads[currentThreadIndex];
 
     try {
-      const response = await axios.post<{ summary: string }>(
-        'http://localhost:8000/summarize',
-        thread,
-        { headers: { 'Content-Type': 'application/json' } }
+      const response = await axios.post<{summary: string}>(
+        `http://localhost:5000/summarize/${threadId}`
       );
+      console.log("got data: ",summary)
       setSummary(response.data.summary);
     } catch (err) {
       console.error('Error:', err);
