@@ -8,6 +8,16 @@ interface SidebarProps {
   onComposeNewEmail: () => void;
 }
 
+function sentimentImagePath(sentiment: string): string {
+  switch(sentiment) {
+    case 'neutral': return `./assets/images/${sentiment}.png`
+    case 'critical': return `./assets/images/${sentiment}.png`
+    case 'needs_attention': return `./assets/images/${sentiment}.png`
+    case 'positive': return `./assets/images/woman1.jpeg`
+    default: return `./assets/images/woman1.jpeg` // Something went wrong with sentiment response
+  }
+}
+
 function truncateDateTime(dateStr: string): string {
   const date = new Date(dateStr);
   const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -61,7 +71,7 @@ const Sidebar: React.FC<SidebarProps> = ({ emailThreads, onSelectThread, current
               >
                 <img
                   className="h-10 w-10 rounded-full mr-4"
-                  src={`./assets/images/${index % 2 === 0 ? 'woman1.jpeg' : 'man2.jpeg'}`}
+                  src={sentimentImagePath(thread.sentiment)}
                   alt="Sender"
                 />
                 <div className="flex-1">

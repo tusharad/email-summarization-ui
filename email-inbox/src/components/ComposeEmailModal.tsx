@@ -8,9 +8,10 @@ interface ComposeEmailModalProps {
   senderEmail2?: string;
   threadId?: number;
   isReply?: boolean;
+  onEmailSent: () => void;
 }
 
-const ComposeEmailModal: React.FC<ComposeEmailModalProps> = ({ onClose, senderEmail2, threadId, isReply = false }) => {
+const ComposeEmailModal: React.FC<ComposeEmailModalProps> = ({ onClose, senderEmail2, threadId, isReply = false,onEmailSent }) => {
   const [senderEmail, setSenderEmail] = useState(senderEmail2);
   const [subject, setSubject] = useState(isReply ? 'Re: ' : '');
   const [content, setContent] = useState('');
@@ -24,6 +25,7 @@ const ComposeEmailModal: React.FC<ComposeEmailModalProps> = ({ onClose, senderEm
         content,
       });
       alert(isReply ? 'Reply sent successfully!' : 'Email sent successfully!');
+      onEmailSent();
       onClose();
     } catch (error) {
       console.error('Error sending email:', error);

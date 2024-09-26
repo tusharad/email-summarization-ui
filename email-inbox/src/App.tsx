@@ -107,13 +107,14 @@ const App: React.FC = () => {
       {isModalOpen && (
         <Modal summary={summary} onClose={closeModal} />
       )}
-      {isComposeModalOpen && <ComposeEmailModal onClose={handleComposeModalClose} />}
+      {isComposeModalOpen && <ComposeEmailModal onEmailSent={fetchEmailThreads} onClose={handleComposeModalClose} />}
      {isReplyModalOpen && replyEmailData && (
         <ComposeEmailModal
           onClose={closeReplyModal}
           senderEmail2={replyEmailData.senderEmail}
           threadId={replyEmailData.threadId}
           isReply={true}
+          onEmailSent={fetchEmailThreads}
         />
       )}
     </div>

@@ -11,5 +11,6 @@ export interface Email {
     threadId: number;
     threadTitle: string;
     emails: Email[];
+    sentiment: string;
   }
   
