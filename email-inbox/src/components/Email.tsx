@@ -2,12 +2,19 @@ import React from 'react';
 import { Email as EmailType } from '../types';
 
 interface EmailProps {
+  threadId: number
   indexKey: number;
   email: EmailType;
   onToggle: () => void;
+  onReply: (senderEmail: string, threadId: number) => void;
 }
 
-const Email: React.FC<EmailProps> = ({indexKey, email, onToggle }) => {
+const Email: React.FC<EmailProps> = ({indexKey, email, onToggle, threadId, onReply }) => {
+
+  const handleReplyClick = () => {
+    onReply(email.senderEmail, threadId);
+  };
+
   return (
     <div
       className="p-6 border-b bg-white cursor-pointer hover:bg-blue-100"
@@ -32,6 +39,14 @@ const Email: React.FC<EmailProps> = ({indexKey, email, onToggle }) => {
       ) : (
         <div className="text-gray-500 truncate">{email.content.substring(0, 100)}...</div>
       )}
+       <div className="flex justify-end mt-4">
+        <button
+          className="bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600"
+          onClick={handleReplyClick}
+        >
+          Reply
+        </button>
+      </div>
     </div>
   );
 };

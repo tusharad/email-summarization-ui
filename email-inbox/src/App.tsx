@@ -3,6 +3,7 @@ import Sidebar from './components/Sidebar.tsx';
 import MainThread from './components/MainThread.tsx';
 import Modal from './components/Modal.tsx';
 import LoadingSpinner from './components/LoadingSpinner.tsx';
+import ComposeEmailModal from './components/ComposeEmailModal.tsx';
 import axios from 'axios';
 import { Thread } from './types';
 
@@ -13,10 +14,24 @@ const App: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [summary, setSummary] = useState<string>('');
   const [error, setError] = useState<string>('');
+  const [isComposeModalOpen, setIsComposeModalOpen] = useState<boolean>(false);
+  const [isReplyModalOpen, setIsReplyModalOpen] = useState<boolean>(false);
+  const [replyEmailData, setReplyEmailData] = useState<{ senderEmail: string; threadId: number } | null>(null);
 
   useEffect(() => {
     fetchEmailThreads();
   }, []);
+
+  const handleReply = (senderEmail: string, threadId: number) => {
+    console.log("reached here",senderEmail)
+    setReplyEmailData({ senderEmail, threadId });
+    setIsReplyModalOpen(true);
+  };
+
+  const closeReplyModal = () => {
+    setIsReplyModalOpen(false);
+    setReplyEmailData(null);
+  };
 
   const fetchEmailThreads = async () => {
     try {
@@ -51,6 +66,12 @@ const App: React.FC = () => {
     setCurrentThreadIndex(index);
   };
 
+  const handleComposeModalOpen = () => {
+    console.log("reacher ere")
+    setIsComposeModalOpen(true);
+  }
+  const handleComposeModalClose = () => setIsComposeModalOpen(false);
+
   const toggleEmailOpen = (threadIndex: number, emailIndex: number) => {
     const updatedThreads = [...emailThreads];
     const email = updatedThreads[threadIndex].emails[emailIndex];
@@ -64,6 +85,7 @@ const App: React.FC = () => {
         emailThreads={emailThreads}
         onSelectThread={handleThreadSelect}
         currentThreadIndex={currentThreadIndex}
+        onComposeNewEmail={handleComposeModalOpen}
       />
       <main className="flex-1 relative overflow-auto">
         {isLoading ? (
@@ -78,11 +100,21 @@ const App: React.FC = () => {
             onSummarize={openModal}
             onToggleEmail={toggleEmailOpen}
             currentThreadIndex={currentThreadIndex}
+            onReply={handleReply}
           />
         )}
       </main>
       {isModalOpen && (
         <Modal summary={summary} onClose={closeModal} />
+      )}
+      {isComposeModalOpen && <ComposeEmailModal onClose={handleComposeModalClose} />}
+     {isReplyModalOpen && replyEmailData && (
+        <ComposeEmailModal
+          onClose={closeReplyModal}
+          senderEmail2={replyEmailData.senderEmail}
+          threadId={replyEmailData.threadId}
+          isReply={true}
+        />
       )}
     </div>
   );

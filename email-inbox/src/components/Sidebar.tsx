@@ -5,6 +5,7 @@ interface SidebarProps {
   emailThreads: Thread[];
   onSelectThread: (index: number) => void;
   currentThreadIndex: number;
+  onComposeNewEmail: () => void;
 }
 
 function truncateDateTime(dateStr: string): string {
@@ -23,13 +24,21 @@ function truncateDateTime(dateStr: string): string {
   return `${day}, ${time}`;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ emailThreads, onSelectThread, currentThreadIndex }) => {
+const Sidebar: React.FC<SidebarProps> = ({ emailThreads, onSelectThread, currentThreadIndex, onComposeNewEmail }) => {
   return (
     <aside className="w-96 bg-white border-r shadow-xl max-w-sm overflow-y-auto">
-      <div className="h-19 bg-primary">
-        <a className="block px-8 py-6 text-2xl text-white" href="/">
+      <div className="relative h-19 bg-primary">
+        <div className="block px-8 py-6 text-xl text-white">
           <span className="ml-2 font-semibold">Inbox</span>
-          </a>
+        </div>
+        <div className="absolute top-5 left-40 text-sm">
+            <button
+              className="flex-auto bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600"
+              onClick={onComposeNewEmail}
+            >
+              Compose New Email
+            </button>
+          </div>
       </div>
       <hr className="h-px mt-0 bg-gradient-to-r from-transparent via-black/40 to-transparent" />
       <ul id="email-sidebar" className="flex flex-col p-4 space-y-2">
@@ -37,18 +46,17 @@ const Sidebar: React.FC<SidebarProps> = ({ emailThreads, onSelectThread, current
           const truncatedContent = thread.emails.length > 0
             ? thread.emails[0].content.substring(0, 23) + '...'
             : 'No content available';
-          
+
           const timeOfEmail = thread.emails.length > 0
-          ? truncateDateTime(thread.emails[0].date)
-          : 'Tue, 8:00 PM';
+            ? truncateDateTime(thread.emails[0].date)
+            : 'Tue, 8:00 PM';
 
 
           return (
             <li key={index} className="w-full">
               <div
-                className={`py-2.7 text-sm my-0 mx-0 flex items-center hover:bg-blue-800 hover:text-white rounded-lg px-4 font-semibold text-slate-700 cursor-pointer transition-colors ${
-                  currentThreadIndex === index ? 'bg-blue-500/13' : ''
-                }`}
+                className={`py-2.7 text-sm my-0 mx-0 flex items-center hover:bg-blue-800 hover:text-white rounded-lg px-4 font-semibold text-slate-700 cursor-pointer transition-colors ${currentThreadIndex === index ? 'bg-blue-500/13' : ''
+                  }`}
                 onClick={() => onSelectThread(index)}
               >
                 <img

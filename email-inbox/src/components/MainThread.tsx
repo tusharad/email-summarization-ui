@@ -6,10 +6,11 @@ interface MainThreadProps {
   thread: Thread;
   onSummarize: (thread_id: number) => void;
   onToggleEmail: (threadIndex: number, emailIndex: number) => void;
-  currentThreadIndex : number
+  currentThreadIndex : number;
+  onReply: (senderEmail: string, threadId: number) => void;
 }
 
-const MainThread: React.FC<MainThreadProps> = ({ thread, onSummarize, onToggleEmail,currentThreadIndex }) => {
+const MainThread: React.FC<MainThreadProps> = ({ thread, onSummarize, onToggleEmail,currentThreadIndex, onReply }) => {
   return (
     <div className="w-full px-6 py-6 mx-auto">
       <div className="flex flex-wrap -mx-3">
@@ -17,7 +18,7 @@ const MainThread: React.FC<MainThreadProps> = ({ thread, onSummarize, onToggleEm
           <div className="relative flex flex-col min-w-0 break-words bg-white shadow-xl rounded-2xl bg-clip-border">
             <div className="h-full overflow-y-auto" id="main-thread">
               {/* Button to trigger modal */}
-              <div className="absolute top-4 right-4">
+              <div className="absolute top-8 right-4">
                 <button
                   className="bg-primary text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700"
                   onClick={() => onSummarize(thread.threadId)}
@@ -34,6 +35,8 @@ const MainThread: React.FC<MainThreadProps> = ({ thread, onSummarize, onToggleEm
                     indexKey={index}
                     email={email}
                     onToggle={() => onToggleEmail(currentThreadIndex, index)}
+                    threadId={thread.threadId}
+                    onReply={onReply}
                   />
                 ))}
               </div>
