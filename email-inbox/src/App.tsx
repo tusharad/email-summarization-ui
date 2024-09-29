@@ -47,18 +47,34 @@ const App: React.FC = () => {
 
   const openModal = async (threadId: number) => {
     setIsModalOpen(true);
+    setSummary('');  // Clear previous summary
 
     try {
-      const response = await axios.post<{summary: string}>(
-        `http://localhost:5000/summarize/${threadId}`
-      );
-      console.log("got data: ",summary)
-      setSummary(response.data.summary);
+        const response = await fetch(`http://localhost:5000/summarize/${threadId}`, {
+            method: 'POST',
+        });
+
+        const reader = response.body?.getReader();
+        const decoder = new TextDecoder();
+        let done = false;
+        let summaryStream = '';
+
+        while (!done) {
+            // Read data in chunks from the stream
+            const { value, done: doneReading } = await reader!.read();
+            done = doneReading;
+            // Decode the chunk and add it to the summary stream
+            const chunk = decoder.decode(value, { stream: true });
+            summaryStream += chunk;
+            setSummary(prev => prev + chunk);  // Update the summary state as new chunks come in
+        }
+
+        console.log('Final summary:', summaryStream);
     } catch (err) {
-      console.error('Error:', err);
-      setSummary('An error occurred. Please try again.');
+        console.error('Error:', err);
+        setSummary('An error occurred. Please try again.');
     }
-  };
+};
 
   const closeModal = () => setIsModalOpen(false);
 
