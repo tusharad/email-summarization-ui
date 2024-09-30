@@ -15,7 +15,7 @@ const Modal: React.FC<ModalProps> = ({ summary, onClose }) => {
       </button>
       <h2 className="text-2xl font-semibold mb-4">Summary </h2>
       <div className="whitespace-pre-wrap break-words max-h-[500px] max-w-full overflow-y-auto">
-        {summary || 'Loading summary...'}
+        {summary || <h2 className='loading-animation text-center text-blue-500'>Loading summary...</h2> }
       </div>
        
     </div>
