@@ -52,7 +52,6 @@ const App: React.FC = () => {
         setEmailThreads(response.data.threads);
         setLastUpdateTime(response.data.time);
         setShowNotification(true);
-        setTimeout(() => setShowNotification(false), 10000);
       }
     } catch (err) {
       console.error('Error checking for new emails:', err);
