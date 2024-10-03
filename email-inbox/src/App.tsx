@@ -4,6 +4,7 @@ import MainThread from './components/MainThread.tsx';
 import Modal from './components/Modal.tsx';
 import LoadingSpinner from './components/LoadingSpinner.tsx';
 import ComposeEmailModal from './components/ComposeEmailModal.tsx';
+import Notification from './components/Notification.tsx';
 import axios from 'axios';
 import { Thread } from './types';
 
@@ -17,13 +18,50 @@ const App: React.FC = () => {
   const [isComposeModalOpen, setIsComposeModalOpen] = useState<boolean>(false);
   const [isReplyModalOpen, setIsReplyModalOpen] = useState<boolean>(false);
   const [replyEmailData, setReplyEmailData] = useState<{ senderEmail: string; threadId: number } | null>(null);
+  const [lastUpdateTime, setLastUpdateTime] = useState<string>('');
+  const [showNotification, setShowNotification] = useState<boolean>(false);
 
   useEffect(() => {
     fetchEmailThreads();
-  }, []);
+
+    const intervalId = setInterval(() => {
+      checkForNewEmails();
+    }, 10000); // 10000 milliseconds = 10 seconds
+
+    return () => clearInterval(intervalId);
+  }, [lastUpdateTime]); // Re-run the effect when lastUpdateTime changes
+
+  const fetchEmailThreads = async () => {
+    try {
+      const response = await axios.get<Thread[]>('http://localhost:5000/all_email_threads');
+      setEmailThreads(response.data.threads);
+      setLastUpdateTime(response.data.time);
+      setIsLoading(false);
+    } catch (err) {
+      console.error('Error fetching email threads:', err);
+      setError('Failed to load email threads. Please try again later.');
+      setIsLoading(false);
+    }
+  };
+
+  const checkForNewEmails = async () => {
+    try {
+      const response = await axios.get(`http://localhost:5000/check_new_emails/${lastUpdateTime }`);
+      if (response.data.threads) {
+        console.log("updating")
+        setEmailThreads(response.data.threads);
+        setLastUpdateTime(response.data.time);
+        setShowNotification(true);
+        setTimeout(() => setShowNotification(false), 10000);
+      }
+    } catch (err) {
+      console.error('Error checking for new emails:', err);
+      // Optionally handle the error if needed
+    }
+  };
 
   const handleReply = (senderEmail: string, threadId: number) => {
-    console.log("reached here",senderEmail)
+    console.log("reached here", senderEmail);
     setReplyEmailData({ senderEmail, threadId });
     setIsReplyModalOpen(true);
   };
@@ -33,48 +71,34 @@ const App: React.FC = () => {
     setReplyEmailData(null);
   };
 
-  const fetchEmailThreads = async () => {
-    try {
-      const response = await axios.get<Thread[]>('http://localhost:5000/all_email_threads');
-      setEmailThreads(response.data);
-      setIsLoading(false);
-    } catch (err) {
-      console.error('Error fetching email threads:', err);
-      setError('Failed to load email threads. Please try again later.');
-      setIsLoading(false);
-    }
-  };
-
   const openModal = async (threadId: number) => {
     setIsModalOpen(true);
-    setSummary('');  // Clear previous summary
+    setSummary(''); // Clear previous summary
 
     try {
-        const response = await fetch(`http://localhost:5000/summarize/${threadId}`, {
-            method: 'POST',
-        });
+      const response = await fetch(`http://localhost:5000/summarize/${threadId}`, {
+        method: 'POST',
+      });
 
-        const reader = response.body?.getReader();
-        const decoder = new TextDecoder();
-        let done = false;
-        let summaryStream = '';
+      const reader = response.body?.getReader();
+      const decoder = new TextDecoder();
+      let done = false;
+      let summaryStream = '';
 
-        while (!done) {
-            // Read data in chunks from the stream
-            const { value, done: doneReading } = await reader!.read();
-            done = doneReading;
-            // Decode the chunk and add it to the summary stream
-            const chunk = decoder.decode(value, { stream: true });
-            summaryStream += chunk;
-            setSummary(prev => prev + chunk);  // Update the summary state as new chunks come in
-        }
+      while (!done) {
+        const { value, done: doneReading } = await reader!.read();
+        done = doneReading;
+        const chunk = decoder.decode(value, { stream: true });
+        summaryStream += chunk;
+        setSummary(prev => prev + chunk);
+      }
 
-        console.log('Final summary:', summaryStream);
+      console.log('Final summary:', summaryStream);
     } catch (err) {
-        console.error('Error:', err);
-        setSummary('An error occurred. Please try again.');
+      console.error('Error:', err);
+      setSummary('An error occurred. Please try again.');
     }
-};
+  };
 
   const closeModal = () => setIsModalOpen(false);
 
@@ -83,9 +107,10 @@ const App: React.FC = () => {
   };
 
   const handleComposeModalOpen = () => {
-    console.log("reacher ere")
+    console.log("reacher ere");
     setIsComposeModalOpen(true);
-  }
+  };
+  
   const handleComposeModalClose = () => setIsComposeModalOpen(false);
 
   const toggleEmailOpen = (threadIndex: number, emailIndex: number) => {
@@ -120,11 +145,9 @@ const App: React.FC = () => {
           />
         )}
       </main>
-      {isModalOpen && (
-        <Modal summary={summary} onClose={closeModal} />
-      )}
+      {isModalOpen && <Modal summary={summary} onClose={closeModal} />}
       {isComposeModalOpen && <ComposeEmailModal onEmailSent={fetchEmailThreads} onClose={handleComposeModalClose} />}
-     {isReplyModalOpen && replyEmailData && (
+      {isReplyModalOpen && replyEmailData && (
         <ComposeEmailModal
           onClose={closeReplyModal}
           senderEmail2={replyEmailData.senderEmail}
@@ -133,6 +156,7 @@ const App: React.FC = () => {
           onEmailSent={fetchEmailThreads}
         />
       )}
+      {showNotification && <Notification message="You got mail!" onClose={() => setShowNotification(false)} /> }
     </div>
   );
 };
