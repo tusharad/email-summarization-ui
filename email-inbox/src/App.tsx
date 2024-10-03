@@ -20,6 +20,7 @@ const App: React.FC = () => {
   const [replyEmailData, setReplyEmailData] = useState<{ senderEmail: string; threadId: number } | null>(null);
   const [lastUpdateTime, setLastUpdateTime] = useState<string>('');
   const [showNotification, setShowNotification] = useState<boolean>(false);
+  const [showSmartReplyNotification, setSmarReplyShowNotification] = useState<boolean>(false);
 
   useEffect(() => {
     fetchEmailThreads();
@@ -99,6 +100,23 @@ const App: React.FC = () => {
     }
   };
 
+  const getSopBasedEmailResponse = async (threadId: number) => {
+    try {
+        const response = await fetch(`http://localhost:5000/store_thread_and_document`,{
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ "thread_id" : threadId, "doc_id" : 1 })
+        });
+
+        setSmarReplyShowNotification(true);
+
+    } catch (err) {
+    console.log("Error during, store_thread_and_document api",err)
+    }
+  }
+
   const closeModal = () => setIsModalOpen(false);
 
   const handleThreadSelect = (index: number) => {
@@ -138,6 +156,7 @@ const App: React.FC = () => {
           <MainThread
             thread={emailThreads[currentThreadIndex]}
             onSummarize={openModal}
+            onGetSop={getSopBasedEmailResponse}
             onToggleEmail={toggleEmailOpen}
             currentThreadIndex={currentThreadIndex}
             onReply={handleReply}
@@ -156,6 +175,7 @@ const App: React.FC = () => {
         />
       )}
       {showNotification && <Notification message="You got mail!" onClose={() => setShowNotification(false)} /> }
+      {showSmartReplyNotification && <Notification message="Will reply in few minutes!!" onClose={() => setSmarReplyShowNotification(false)} /> }
     </div>
   );
 };
