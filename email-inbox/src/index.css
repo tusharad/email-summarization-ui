@@ -45,3 +45,12 @@
   margin-left: 10px;
   cursor: pointer;
 }
+
+/* Add this CSS */
+.pre-wrap {
+  white-space: pre-wrap; /* This will allow the text to wrap */
+  overflow-wrap: break-word; /* This helps with breaking long words */
+  width: 100%; /* Ensures the pre doesn't exceed its container width */
+  overflow: auto; /* Adds a scrollbar if needed */
+}
+
