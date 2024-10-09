@@ -1,11 +1,12 @@
 .bg-primary {
-    background-color: #951ab4; /* blue-600 */
+   // background-color: #951ab4; /* blue-600 */
+    background-color: #dc251c
 }
 .bg-secondary {
     background-color: #EEF2FF; /* indigo-50 */
 }
 .text-primary {
-    color: #4F46E5; /* blue-600 */
+    color: rgb(225, 37, 27); /* red-600 */
 }
 .text-secondary {
     color: #6B7280; /* gray-500 */

@@ -36,17 +36,17 @@ function truncateDateTime(dateStr: string): string {
 
 const Sidebar: React.FC<SidebarProps> = ({ emailThreads, onSelectThread, currentThreadIndex, onComposeNewEmail }) => {
   return (
-    <aside className="w-96 bg-white border-r shadow-xl max-w-sm overflow-y-auto">
+    <aside className="w-3/4 bg-white border-r shadow-xl max-w-md overflow-y-auto">
       <div className="relative h-19 bg-primary">
         <div className="block px-8 py-6 text-xl text-white">
           <span className="ml-2 font-semibold">Inbox</span>
         </div>
-        <div className="absolute top-5 left-40 text-sm">
+        <div className="absolute top-5 end-10 text-sm">
             <button
-              className="flex-auto bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600"
+              className="flex-auto bg-white text-red-500 px-4 py-2 rounded-lg shadow hover:bg-gray-300"
               onClick={onComposeNewEmail}
             >
-              Compose New Email
+              New message
             </button>
           </div>
       </div>
@@ -54,7 +54,7 @@ const Sidebar: React.FC<SidebarProps> = ({ emailThreads, onSelectThread, current
       <ul id="email-sidebar" className="flex flex-col p-4 space-y-2">
         {emailThreads.map((thread, index) => {
           const truncatedContent = thread.emails.length > 0
-            ? thread.emails[0].content.substring(0, 23) + '...'
+            ? thread.emails[0].content.substring(0, 33) + '...'
             : 'No content available';
 
           const timeOfEmail = thread.emails.length > 0

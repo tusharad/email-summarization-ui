@@ -5,6 +5,8 @@ export interface Email {
     date: string;
     content: string;
     isOpen: boolean;
+    isResolved: boolean;
+    emailRecordId: number;
   }
   
   export interface Thread {

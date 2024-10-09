@@ -107,7 +107,7 @@ const App: React.FC = () => {
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ "thread_id" : threadId, "doc_id" : 1 })
+        body: JSON.stringify({ "thread_id" : threadId, "doc_id" : 2 })
         });
 
         setSmarReplyShowNotification(true);
