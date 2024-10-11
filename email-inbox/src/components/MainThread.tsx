@@ -20,7 +20,7 @@ const MainThread: React.FC<MainThreadProps> = ({ thread, onSummarize, onToggleEm
             <div className="h-full overflow-y-auto" id="main-thread">
               <div className="absolute top-12 right-8">
                 <button
-                  className="bg-gradient-to-r from-red-300 to-red-800 text-white px-4 py-2 rounded-lg shadow hover:from-red-800 hover:to-red-300"
+                  className="bg-gray-100 text-red-500 px-4 py-2 rounded-lg shadow hover:from-red-800 hover:bg-gray-300"
                   onClick={() => onSummarize(thread.threadId)}
                 >
                   Summarize
@@ -28,7 +28,7 @@ const MainThread: React.FC<MainThreadProps> = ({ thread, onSummarize, onToggleEm
               </div>
               <div className='absolute top-12 right-40'>
                               <button
-                  className="bg-gradient-to-tl from-red-300 to-red-800 text-white px-4 py-2 rounded-lg shadow hover:from-red-800 hover:to-red-300"
+                  className="bg-gray-100 text-red-500 px-4 py-2 rounded-lg shadow hover:from-red-800 hover:bg-gray-300"
                   onClick={() => onGetSop(thread.threadId)}
                 >
                   Get Smart Reply
