@@ -145,7 +145,7 @@ const App: React.FC = () => {
         currentThreadIndex={currentThreadIndex}
         onComposeNewEmail={handleComposeModalOpen}
       />
-      <main className="flex-1 relative overflow-auto">
+      <main className="flex-1 relative bg-gray-200 overflow-auto">
         {isLoading ? (
           <LoadingSpinner />
         ) : error ? (

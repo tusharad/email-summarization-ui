@@ -13,14 +13,14 @@ interface MainThreadProps {
 
 const MainThread: React.FC<MainThreadProps> = ({ thread, onSummarize, onToggleEmail,currentThreadIndex, onReply, onGetSop }) => {
   return (
-    <div className="w-full px-8 py-6 mx-auto">
+    <div className="w-full px-3 py-2 mx-auto">
       <div className="flex flex-wrap -mx-3">
-        <div className="w-full max-w-full px-3 mb-6">
-          <div className="relative flex flex-col min-w-0 break-words bg-white shadow-xl rounded-2xl bg-clip-border">
+        <div className="w-full max-w-full mb-6">
+          <div className="relative flex flex-col min-w-0 break-words bg-gray-200 rounded-2xl bg-clip-border">
             <div className="h-full overflow-y-auto" id="main-thread">
               <div className="absolute top-12 right-8">
                 <button
-                  className="bg-gray-100 text-red-500 px-4 py-2 rounded-lg shadow hover:from-red-800 hover:bg-gray-300"
+                  className="bg-gray-100 text-red-500 px-4 font-bold py-2 rounded-lg shadow hover:from-red-800 hover:bg-gray-300"
                   onClick={() => onSummarize(thread.threadId)}
                 >
                   Summarize
@@ -28,14 +28,14 @@ const MainThread: React.FC<MainThreadProps> = ({ thread, onSummarize, onToggleEm
               </div>
               <div className='absolute top-12 right-40'>
                               <button
-                  className="bg-gray-100 text-red-500 px-4 py-2 rounded-lg shadow hover:from-red-800 hover:bg-gray-300"
+                  className="bg-gray-100 text-red-500 px-4 font-bold py-2 rounded-lg shadow hover:from-red-800 hover:bg-gray-300"
                   onClick={() => onGetSop(thread.threadId)}
                 >
-                  Get Smart Reply
+                  Smart Reply
                 </button>
 
               </div>
-              <div id="email-content" className="p-6 bg-white">
+              <div className="p-6 bg-gray-200">
                 <div
                   className="p-6 border-b bg-red-600 text-white rounded-t-lg"
                 >

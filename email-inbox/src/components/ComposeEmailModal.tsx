@@ -19,7 +19,7 @@ const ComposeEmailModal: React.FC<ComposeEmailModalProps> = ({
   const [senderEmail, setSenderEmail] = useState(senderEmail2);
   const [subject, setSubject] = useState(isReply ? 'Re: ' : '');
   const [content, setContent] = useState('');
-  const [isMaximized, setIsMaximized] = useState(false);
+  const [isMaximized, setIsMaximized] = useState(true);
 
   const handleSend = async () => {
     try {
@@ -72,7 +72,7 @@ const ComposeEmailModal: React.FC<ComposeEmailModalProps> = ({
           <label className="block text-sm font-medium text-gray-700">From</label>
           <input
             type="email"
-            className="mt-1 px-2 block w-full border border-gray-400 rounded-md shadow-lg focus:ring-blue-500 focus:border-blue-500"
+            className="mt-1 px-2 py-2 block w-full border border-gray-400 rounded-md shadow-lg focus:ring-blue-500 focus:border-blue-500"
             value={senderEmail}
             onChange={(e) => setSenderEmail(e.target.value)}
             disabled={isReply}
@@ -83,7 +83,7 @@ const ComposeEmailModal: React.FC<ComposeEmailModalProps> = ({
             <label className="block text-sm font-medium text-gray-700">Subject</label>
             <input
               type="text"
-              className="mt-1 px-2 block w-full border border-gray-400 rounded-md shadow-lg focus:ring-blue-500 focus:border-blue-500"
+              className="mt-1 px-2 py-2 block w-full border border-gray-400 rounded-md shadow-lg focus:ring-blue-500 focus:border-blue-500"
               value={subject}
               onChange={(e) => setSubject(e.target.value)}
             />
@@ -95,7 +95,7 @@ const ComposeEmailModal: React.FC<ComposeEmailModalProps> = ({
             className="mt-1 px-2 block w-full border border-gray-400 rounded-md shadow-lg focus:ring-blue-500 focus:border-blue-500"
             value={content}
             onChange={(e) => setContent(e.target.value)}
-            rows={4}
+            rows={15}
           />
         </div>
         <div className="flex justify-end">

@@ -40,7 +40,7 @@ const Email: React.FC<EmailProps> = ({ indexKey, email, onToggle, threadId, onRe
         <div className="flex items-center cursor-pointer" onClick={onToggle}>
           <img
             className="h-8 w-8 rounded-full mr-2"
-            src={`./assets/images/${indexKey % 2 === 0 ? 'man2.jpeg' : 'woman1.jpeg'}`}
+            src={`./assets/images/${email.senderEmail === "support@business.com" ? 'customer_support_profile.png' : 'generic_profile_image.png'}`}
             alt="Sender"
           />
           <div>
@@ -48,24 +48,29 @@ const Email: React.FC<EmailProps> = ({ indexKey, email, onToggle, threadId, onRe
             <p className="text-sm text-secondary">{email.senderEmail}</p>
           </div>
         </div>
-        <p className="text-sm text-gray-400">{email.date}</p>
+        <p className="text-sm text-gray-600">{email.date}</p>
       </div>
       {email.isOpen ? (
         emailIsResolved ? (
-          <pre onClick={onToggle} className="text-gray-900 mt-4 pre-wrap">{email.content}</pre>
+          <pre onClick={onToggle} className="text-gray-900 bg-gray-200 mt-4 px-2 py-2 pre-wrap">{email.content}</pre>
         ) : (
           <div>
             <textarea
-              className="w-full border border-gray-300 rounded-md p-2 mt-4"
+              className="w-full text-gray-800 border border-gray-700 rounded-md p-2 mt-4"
               value={emailContent}
               onChange={(e) => setEmailContent(e.target.value)}
-              rows={16} // Increased number of rows
+              rows={25} // Increased number of rows
             />
             <button
-              className="bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 mt-2"
+              className="bg-red-500 text-white px-4 py-2 mr-2 rounded-lg shadow hover:bg-red-600 mt-2"
+            >
+              Cancel
+            </button>
+            <button
+              className="bg-red-500 text-white px-4 py-2 rounded-lg shadow hover:bg-red-600 mt-2"
               onClick={handleConfirmSend}
             >
-              Confirm Send
+              Send
             </button>
           </div>
         )
@@ -73,18 +78,9 @@ const Email: React.FC<EmailProps> = ({ indexKey, email, onToggle, threadId, onRe
         <div onClick={onToggle} className="text-gray-500 truncate">{email.content.substring(0, 100)}...</div>
       )}
       <div className="flex justify-between mt-4">
-        {emailIsResolved ? 
-        <button
-          className="bg-red-500 text-white px-4 py-2 rounded-lg shadow hover:bg-red-600"
-          onClick={handleReplyClick}
-        >
-          Reply
-        </button> : undefined
-        }
+        <span></span>
         <div className="flex space-x-4">
-          <FontAwesomeIcon icon={faReply} className="text-gray-500 hover:text-blue-500 cursor-pointer" />
-          <FontAwesomeIcon icon={faForward} className="text-gray-500 hover:text-blue-500 cursor-pointer" />
-          <FontAwesomeIcon icon={faTrash} className="text-gray-500 hover:text-red-500 cursor-pointer" />
+          <FontAwesomeIcon icon={faReply} className="text-gray-500 hover:text-red-500 cursor-pointer" onClick={handleReplyClick} />
           <FontAwesomeIcon icon={faStar} className="text-gray-500 hover:text-yellow-500 cursor-pointer" />
         </div>
       </div>
