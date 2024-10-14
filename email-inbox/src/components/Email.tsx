@@ -59,7 +59,7 @@ const Email: React.FC<EmailProps> = ({ indexKey, email, onToggle, threadId, onRe
               className="w-full border border-gray-300 rounded-md p-2 mt-4"
               value={emailContent}
               onChange={(e) => setEmailContent(e.target.value)}
-              rows={8} // Increased number of rows
+              rows={16} // Increased number of rows
             />
             <button
               className="bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 mt-2"
