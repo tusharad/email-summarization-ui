@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Pie } from 'react-chartjs-2';
 import ReactPaginate from 'react-paginate';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
@@ -7,24 +7,38 @@ import { Link } from 'react-router-dom';
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const Dashboard: React.FC = () => {
-  // Static data for tables and chart
+  const [faqPageNumber, setFaqPageNumber] = useState(0);
+  const [sopPageNumber, setSopPageNumber] = useState(0);
+  const [gapsData, setGapsData] = useState<{ category: string; gap_type: string; id: number }[]>([]);
+  const [countData, setCountData] = useState<{ [key: string]: number }>({});
+  const itemsPerPage = 5;
+
   const faqData = [
     { question: 'What is your return policy?', frequency: 120 },
     { question: 'How do I track my order?', frequency: 90 },
     { question: 'Can I purchase items in bulk?', frequency: 45 },
   ];
 
-  const sopData = [
-    { category: 'Shipping', gaps: 'Delayed delivery times' },
-    { category: 'Payments', gaps: 'Limited payment options' },
-    { category: 'Customer Support', gaps: 'Inconsistent response time' },
-  ];
+  const fetchData = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/get_category_gap/1');
+      const data = await response.json();
+      setGapsData(data.gaps);
+      setCountData(data.count);
+    } catch (error) {
+      console.error('Error fetching SOP gaps:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   const pieData = {
-    labels: ['Not covered by SOP', 'Partially covered by SOP', 'Ambiguous SOP Guidance', 'Not covered by SOP', 'Inaccurate SOP information'],
+    labels: Object.keys(countData),
     datasets: [{
       label: 'SOP Coverage vs Customer Queries',
-      data: [10, 10, 15, 25, 40],
+      data: Object.values(countData),
       backgroundColor: [
         '#4CAF50', // Green
         '#FF9800', // Amber
@@ -36,12 +50,8 @@ const Dashboard: React.FC = () => {
     }]
   };
 
-  const [faqPageNumber, setFaqPageNumber] = useState(0);
-  const [sopPageNumber, setSopPageNumber] = useState(0);
-  const itemsPerPage = 2;
-
   const displayFaqs = faqData.slice(faqPageNumber * itemsPerPage, (faqPageNumber + 1) * itemsPerPage);
-  const displaySops = sopData.slice(sopPageNumber * itemsPerPage, (sopPageNumber + 1) * itemsPerPage);
+  const displaySops = gapsData.slice(sopPageNumber * itemsPerPage, (sopPageNumber + 1) * itemsPerPage);
 
   const handleFaqPageClick = ({ selected }: { selected: number }) => {
     setFaqPageNumber(selected);
@@ -61,7 +71,7 @@ const Dashboard: React.FC = () => {
       </header>
       <div className="flex flex-col md:flex-row gap-6">
         <div className="flex-auto">
-          <h2 className="text-lg mx-auto font-bold mb-2">Frequently Asked Questions</h2>
+          <h2 className="text-lg font-bold mb-2">Frequently Asked Questions</h2>
           <table className="w-full mb-4 border-collapse border border-gray-300">
             <thead>
               <tr>
@@ -96,20 +106,20 @@ const Dashboard: React.FC = () => {
             <thead>
               <tr>
                 <th className="border border-gray-900 p-2">Category</th>
-                <th className="border border-gray-900 p-2">Gaps</th>
+                <th className="border border-gray-900 p-2">Gap Type</th>
               </tr>
             </thead>
             <tbody>
               {displaySops.map((sop, index) => (
-                <tr key={index}>
+                <tr key={sop.id}>
                   <td className="border border-gray-900 p-2">{sop.category}</td>
-                  <td className="border border-gray-900 p-2">{sop.gaps}</td>
+                  <td className="border border-gray-900 p-2">{sop.gap_type}</td>
                 </tr>
               ))}
             </tbody>
           </table>
           <ReactPaginate
-            pageCount={Math.ceil(sopData.length / itemsPerPage)}
+            pageCount={Math.ceil(gapsData.length / itemsPerPage)}
             onPageChange={handleSopPageClick}
             previousLabel={'Previous'}
             nextLabel={'Next'}
