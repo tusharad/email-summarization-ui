@@ -7,31 +7,39 @@ import { Link } from 'react-router-dom';
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const Dashboard: React.FC = () => {
+  const [faqData, setFaqData] = useState<{ faq: string; freq: number }[]>([]);
   const [faqPageNumber, setFaqPageNumber] = useState(0);
   const [sopPageNumber, setSopPageNumber] = useState(0);
   const [gapsData, setGapsData] = useState<{ category: string; gap_type: string; id: number }[]>([]);
   const [countData, setCountData] = useState<{ [key: string]: number }>({});
   const itemsPerPage = 5;
 
-  const faqData = [
-    { question: 'What is your return policy?', frequency: 120 },
-    { question: 'How do I track my order?', frequency: 90 },
-    { question: 'Can I purchase items in bulk?', frequency: 45 },
-  ];
-
-  const fetchData = async () => {
-    try {
-      const response = await fetch('http://localhost:5000/get_category_gap/1');
-      const data = await response.json();
-      setGapsData(data.gaps);
-      setCountData(data.count);
-    } catch (error) {
-      console.error('Error fetching SOP gaps:', error);
-    }
-  };
-
   useEffect(() => {
-    fetchData();
+    // Fetch FAQs with frequency
+    const fetchFaqData = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/get_faqs_with_freq');
+        const data = await response.json();
+        setFaqData(data);
+      } catch (error) {
+        console.error('Error fetching FAQs:', error);
+      }
+    };
+
+    // Fetch SOP gaps
+    const fetchGapData = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/get_category_gap/1');
+        const data = await response.json();
+        setGapsData(data.gaps);
+        setCountData(data.count);
+      } catch (error) {
+        console.error('Error fetching SOP gaps:', error);
+      }
+    };
+
+    fetchFaqData();
+    fetchGapData();
   }, []);
 
   const pieData = {
@@ -82,8 +90,8 @@ const Dashboard: React.FC = () => {
             <tbody>
               {displayFaqs.map((faq, index) => (
                 <tr key={index}>
-                  <td className="border border-gray-900 p-2">{faq.question}</td>
-                  <td className="border border-gray-900 p-2 text-center">{faq.frequency}</td>
+                  <td className="border border-gray-900 p-2">{faq.faq}</td>
+                  <td className="border border-gray-900 p-2 text-center">{faq.freq}</td>
                 </tr>
               ))}
             </tbody>
