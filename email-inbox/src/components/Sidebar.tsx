@@ -41,12 +41,21 @@ const Sidebar: React.FC<SidebarProps> = ({ emailThreads, onSelectThread, current
         <div className="block px-8 py-6 text-3xl text-white">
           <span className="ml-2 font-bold">Inbox</span>
         </div>
-        <div className="absolute top-5 end-10 text-sm">
+        <div className="absolute top-6 end-10 text-sm">
             <button
               className="flex-auto font-bold bg-white text-red-500 px-4 py-2 rounded-lg shadow hover:bg-gray-300"
               onClick={onComposeNewEmail}
             >
               New message
+            </button>
+          </div>
+          <div className="absolute top-6 end-44 text-sm">
+            <button
+              className="button flex-auto font-bold bg-white text-red-500 px-4 py-2 rounded-lg shadow hover:bg-gray-300"
+            >
+              <a href="/dashboard">
+              Dashboard
+              </a>
             </button>
           </div>
       </div>

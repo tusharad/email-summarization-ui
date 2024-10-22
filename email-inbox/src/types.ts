@@ -7,6 +7,7 @@ export interface Email {
     isOpen: boolean;
     isResolved: boolean;
     emailRecordId: number;
+    coveragePercentage: number;
   }
   
   export interface Thread {

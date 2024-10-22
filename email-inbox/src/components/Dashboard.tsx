@@ -10,7 +10,7 @@ const Dashboard: React.FC = () => {
   const [faqData, setFaqData] = useState<{ faq: string; freq: number }[]>([]);
   const [faqPageNumber, setFaqPageNumber] = useState(0);
   const [sopPageNumber, setSopPageNumber] = useState(0);
-  const [gapsData, setGapsData] = useState<{ category: string; gap_type: string; id: number }[]>([]);
+  const [gapsData, setGapsData] = useState<{ faq: string; gap_type: string; id: number }[]>([]);
   const [countData, setCountData] = useState<{ [key: string]: number }>({});
   const itemsPerPage = 5;
 
@@ -113,14 +113,14 @@ const Dashboard: React.FC = () => {
           <table className="w-full mb-4 border-collapse border border-gray-300">
             <thead>
               <tr>
-                <th className="border border-gray-900 p-2">Category</th>
+                <th className="border border-gray-900 p-2">FAQ</th>
                 <th className="border border-gray-900 p-2">Gap Type</th>
               </tr>
             </thead>
             <tbody>
               {displaySops.map((sop, index) => (
                 <tr key={sop.id}>
-                  <td className="border border-gray-900 p-2">{sop.category}</td>
+                  <td className="border border-gray-900 p-2">{sop.faq}</td>
                   <td className="border border-gray-900 p-2">{sop.gap_type}</td>
                 </tr>
               ))}

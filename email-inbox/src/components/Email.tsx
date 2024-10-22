@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Email as EmailType } from '../types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faReply, faForward, faTrash, faStar } from '@fortawesome/free-solid-svg-icons';
+import { faReply, faStar } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 
 interface EmailProps {
@@ -33,6 +33,17 @@ const Email: React.FC<EmailProps> = ({ indexKey, email, onToggle, threadId, onRe
       alert('Failed to update email.');
     }
   };
+
+  const getCoverageStyle = (coverage: number) => {
+    if (coverage >= 0 && coverage <= 25) {
+      return 'text-red-500';
+    } else if (coverage > 25 && coverage <= 100) {
+      return 'text-green-500';
+    }
+    return 'hidden';
+  };
+
+  const coverageStyle = getCoverageStyle(email.coveragePercentage);
 
   return (
     <div className="p-6 border-b bg-white hover:bg-gray-50 transition">
@@ -72,6 +83,11 @@ const Email: React.FC<EmailProps> = ({ indexKey, email, onToggle, threadId, onRe
             >
               Send
             </button>
+            {email.coveragePercentage >= 0 && email.coveragePercentage <= 100 && (
+                <span className={`ml-4 font-semibold ${coverageStyle}`}>
+                  Coverage: {email.coveragePercentage}%
+                </span>
+              )}
           </div>
         )
       ) : (
