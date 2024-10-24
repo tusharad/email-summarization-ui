@@ -3,19 +3,19 @@ import { Pie } from 'react-chartjs-2';
 import ReactPaginate from 'react-paginate';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Link } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const Dashboard: React.FC = () => {
-  const [faqData, setFaqData] = useState<{ faq: string; freq: number }[]>([]);
+  const [faqData, setFaqData] = useState<{ faq: string; freq: number; coverage_percentage: number; coverageDescription: string }[]>([]);
   const [faqPageNumber, setFaqPageNumber] = useState(0);
-  const [sopPageNumber, setSopPageNumber] = useState(0);
-  const [gapsData, setGapsData] = useState<{ faq: string; gap_type: string; id: number }[]>([]);
-  const [countData, setCountData] = useState<{ [key: string]: number }>({});
+  const [visibleDescriptionIndex, setVisibleDescriptionIndex] = useState<number | null>(null);
+  
   const itemsPerPage = 5;
 
   useEffect(() => {
-    // Fetch FAQs with frequency
     const fetchFaqData = async () => {
       try {
         const response = await fetch('http://localhost:5000/get_faqs_with_freq');
@@ -26,47 +26,52 @@ const Dashboard: React.FC = () => {
       }
     };
 
-    // Fetch SOP gaps
-    const fetchGapData = async () => {
-      try {
-        const response = await fetch('http://localhost:5000/get_category_gap/1');
-        const data = await response.json();
-        setGapsData(data.gaps);
-        setCountData(data.count);
-      } catch (error) {
-        console.error('Error fetching SOP gaps:', error);
-      }
-    };
-
     fetchFaqData();
-    fetchGapData();
   }, []);
 
+  // Categorize the data based on coverage_percentage
+  const categories = { 
+    'Fully Covered': 0, 
+    'Majorly Covered': 0, 
+    'Partially Covered': 0, 
+    'Not Covered': 0 
+  };
+
+  faqData.forEach(faq => {
+    if (faq.coverage_percentage === 100) {
+      categories['Fully Covered'] += faq.freq;
+    } else if (faq.coverage_percentage >= 80) {
+      categories['Majorly Covered'] += faq.freq;
+    } else if (faq.coverage_percentage >= 40) {
+      categories['Partially Covered'] += faq.freq;
+    } else {
+      categories['Not Covered'] += faq.freq;
+    }
+  });
+
   const pieData = {
-    labels: Object.keys(countData),
+    labels: Object.keys(categories),
     datasets: [{
-      label: 'SOP Coverage vs Customer Queries',
-      data: Object.values(countData),
+      label: 'SOP Coverage',
+      data: Object.values(categories),
       backgroundColor: [
-        '#4CAF50', // Green
-        '#FF9800', // Amber
-        '#2196F3', // Blue
-        '#F44336', // Red
-        '#9C27B0', // Purple
+        '#4CAF50', // Green for Fully Covered
+        '#FF9800', // Amber for Majorly Covered
+        '#2196F3', // Blue for Partially Covered
+        '#F44336', // Red for Not Covered
       ],
       hoverOffset: 2
     }]
   };
 
   const displayFaqs = faqData.slice(faqPageNumber * itemsPerPage, (faqPageNumber + 1) * itemsPerPage);
-  const displaySops = gapsData.slice(sopPageNumber * itemsPerPage, (sopPageNumber + 1) * itemsPerPage);
 
   const handleFaqPageClick = ({ selected }: { selected: number }) => {
     setFaqPageNumber(selected);
   };
 
-  const handleSopPageClick = ({ selected }: { selected: number }) => {
-    setSopPageNumber(selected);
+  const handleToggleDescription = (index: number) => {
+    setVisibleDescriptionIndex(visibleDescriptionIndex === index ? null : index);
   };
 
   return (
@@ -78,13 +83,14 @@ const Dashboard: React.FC = () => {
         </Link>
       </header>
       <div className="flex flex-col md:flex-row gap-6">
-        <div className="flex-auto">
+        <div className="flex-auto md:w-1/2">
           <h2 className="text-lg font-bold mb-2">Frequently Asked Questions</h2>
           <table className="w-full mb-4 border-collapse border border-gray-300">
             <thead>
               <tr>
                 <th className="border border-gray-900 p-2">Question</th>
                 <th className="border border-gray-900 p-2">Frequency</th>
+                <th className="border border-gray-900 p-2">Coverage Percentage</th>
               </tr>
             </thead>
             <tbody>
@@ -92,6 +98,20 @@ const Dashboard: React.FC = () => {
                 <tr key={index}>
                   <td className="border border-gray-900 p-2">{faq.faq}</td>
                   <td className="border border-gray-900 p-2 text-center">{faq.freq}</td>
+                  <td className="border border-gray-900 p-2 text-center">
+                    {faq.coverage_percentage}%
+                    <button
+                      onClick={() => handleToggleDescription(index)}
+                      className="ml-2 text-gray-500 hover:text-yellow-500 cursor-pointer"
+                    >
+                      <FontAwesomeIcon icon={faQuestionCircle} />
+                    </button>
+                    {visibleDescriptionIndex === index && (
+                      <div className="text-sm text-gray-700 mt-1">
+                        {faq.coverageDescription}
+                      </div>
+                    )}
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -108,40 +128,20 @@ const Dashboard: React.FC = () => {
             previousClassName={'px-3 py-1 border rounded-lg cursor-pointer hover:bg-red-100'}
             nextClassName={'px-3 py-1 border rounded-lg cursor-pointer hover:bg-red-100'}
           />
-
-          <h2 className="text-lg font-bold mb-2">SOP Gaps and Areas of Development</h2>
-          <table className="w-full mb-4 border-collapse border border-gray-300">
-            <thead>
-              <tr>
-                <th className="border border-gray-900 p-2">FAQ</th>
-                <th className="border border-gray-900 p-2">Gap Type</th>
-              </tr>
-            </thead>
-            <tbody>
-              {displaySops.map((sop, index) => (
-                <tr key={sop.id}>
-                  <td className="border border-gray-900 p-2">{sop.faq}</td>
-                  <td className="border border-gray-900 p-2">{sop.gap_type}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          <ReactPaginate
-            pageCount={Math.ceil(gapsData.length / itemsPerPage)}
-            onPageChange={handleSopPageClick}
-            previousLabel={'Previous'}
-            nextLabel={'Next'}
-            containerClassName={'flex justify-center mb-4 space-x-2'}
-            pageClassName={'px-3 py-1 border rounded-lg cursor-pointer hover:bg-red-100'}
-            activeClassName={'bg-red-500 text-white'}
-            breakClassName={'px-3 py-1'}
-            previousClassName={'px-3 py-1 border rounded-lg cursor-pointer hover:bg-red-100'}
-            nextClassName={'px-3 py-1 border rounded-lg cursor-pointer hover:bg-red-100'}
-          />
         </div>
-        <div className="flex-auto w-10">
+        <div className="flex-auto md:w-1/3">
           <h2 className="text-2xl font-bold mb-2">SOP Coverage vs Customer Queries</h2>
-          <Pie data={pieData} />
+                    <div className="w-full">
+            <Pie data={pieData} />
+          </div>
+          <div className="mb-4">
+            <ul className="list-disc ml-6">
+              <li><span className="" style={{ color: '#4CAF50' }}>Fully Covered</span>: 100%</li>
+              <li><span className="" style={{ color: '#FF9800' }}>Majorly Covered</span>: 80% and above</li>
+              <li><span className="" style={{ color: '#2196F3' }}>Partially Covered</span>: 40% to less than 80%</li>
+              <li><span className="" style={{ color: '#F44336' }}>Not Covered</span>: Less than 40%</li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>
@@ -149,3 +149,4 @@ const Dashboard: React.FC = () => {
 };
 
 export default Dashboard;
+

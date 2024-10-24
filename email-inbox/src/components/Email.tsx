@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Email as EmailType } from '../types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faReply, faStar } from '@fortawesome/free-solid-svg-icons';
+import { faReply, faStar, faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 
 interface EmailProps {
@@ -15,6 +15,7 @@ interface EmailProps {
 const Email: React.FC<EmailProps> = ({ indexKey, email, onToggle, threadId, onReply }) => {
   const [emailContent, setEmailContent] = useState(email.content);
   const [emailIsResolved, setEmailIsResolved] = useState(email.isResolved);
+    const [toggleCoverageDescription, setToggleDescription] = useState<boolen | null>(true);
 
   const handleReplyClick = () => {
     onReply(email.senderEmail, threadId);
@@ -45,7 +46,7 @@ const Email: React.FC<EmailProps> = ({ indexKey, email, onToggle, threadId, onRe
 
   const coverageStyle = getCoverageStyle(email.coveragePercentage);
 
-  return (
+ return (
     <div className="p-6 border-b bg-white hover:bg-gray-50 transition">
       <div className="flex justify-between items-center mb-4">
         <div className="flex items-center cursor-pointer" onClick={onToggle}>
@@ -84,9 +85,24 @@ const Email: React.FC<EmailProps> = ({ indexKey, email, onToggle, threadId, onRe
               Send
             </button>
             {email.coveragePercentage >= 0 && email.coveragePercentage <= 100 && (
+            <>
                 <span className={`ml-4 font-semibold ${coverageStyle}`}>
                   Coverage: {email.coveragePercentage}%
                 </span>
+
+                <button
+                                            onClick={() => setToggleDescription(!toggleCoverageDescription)}
+                                            className="ml-2 text-gray-500 hover:text-yellow-500 cursor-pointer"
+                                        >
+                                            <FontAwesomeIcon icon={faQuestionCircle} />
+                                        </button>
+                                        {(toggleCoverageDescription ? null : ( 
+                                            <div className="text-sm text-gray-700 mt-1">
+                                                {email.coverageDescription}
+                                            </div>)
+                                        )}
+
+                </>
               )}
           </div>
         )

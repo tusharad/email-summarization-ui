@@ -7,6 +7,7 @@ import {
   RouterProvider,
 } from "react-router-dom";
 import Dashboard from './components/Dashboard.tsx';
+// import 'react-tooltip/dist/react-tooltip.css'
 
 const router = createBrowserRouter([
   {
